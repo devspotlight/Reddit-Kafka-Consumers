@@ -1,7 +1,7 @@
 {
   "name": "kafka-stream-viz",
-  "description": "A demo showing Heroku+AWS integration using Apache Kafka on Heroku and AWS RedShift.",
-  "version": "1.0.0",
+  "description": "Kafka stream visualization with Node/Express and D3.",
+  "version": "1.0.1",
   "bugs": {
     "url": "https://github.com/heroku-examples/kafka-stream-viz/issues"
   },

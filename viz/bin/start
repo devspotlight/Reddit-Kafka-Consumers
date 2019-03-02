@@ -46,4 +46,11 @@ if [ "${NODE_ENV}" = "production" ]; then
 fi
 
 # Start it up
-node app.js
+if [ "${NODE_ENV}" = "development" ]; then
+  echo "Running node $NODE_DEBUG_OPTION app.js"
+  node $NODE_DEBUG_OPTION app.js
+else
+  node app.js
+fi
+
+# File from https://github.com/heroku/kafka-demo/blob/master/bin/start

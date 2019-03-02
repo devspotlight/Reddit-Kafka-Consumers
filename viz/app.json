@@ -1,5 +1,5 @@
 {
-  "name": "twitter-display",
+  "name": "kafka-stream-viz",
   "scripts": {},
   "env": {
     "KAFKA_CLIENT_CERT": {

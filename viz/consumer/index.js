@@ -1,7 +1,18 @@
 const Kafka = require('no-kafka')
 const Moment = require('moment')
 
+/**
+ * Kafka Consumer class
+ * @type {module.Consumer}
+ */
 module.exports = class Consumer {
+  /**
+   * Constructs a Kafka consumer that will process the data stream?
+   * @param interval Used to set up the consumer.
+   * @param broadcast Callback to send data processed by the consumer to.
+   * @param topic Used as clientId option for SimpleConsumer class (no-kafka module).
+   * @param consumer See remaining SimpleConsumerOptions interface (no-kafka module).
+   */
   constructor({ interval, broadcast, topic, consumer }) {
     this._broadcast = broadcast
     this._interval = interval

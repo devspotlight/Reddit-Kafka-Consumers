@@ -34,15 +34,15 @@ const PORT = process.env.PORT || 3000
 
 /*
  * Configure web app and webpack pieces
- *
  */
 app.use('/public', express.static(path.join(__dirname, 'public')))
 
-// Configure admin routes for demoer
+// Configure admin routes
 const auth = basicAuth({
-  users: { '': process.env.ADMIN_PASSWORD || 'supersecret' },
+  // TODO: Use .env for secrets
+  users: { '': process.env.ADMIN_PASSWORD || 'ultrasecret' },
   challenge: true,
-  realm: 'Demo Admin'
+  realm: 'Kafka Stream Visualization Admin'
 })
 
 app.get('/admin/reload', auth, (req, res) => {
@@ -101,14 +101,12 @@ if (PRODUCTION) {
 server.on('request', app)
 
 /*
- * Configure WebSocketServer
- *
+ * Configure WebSocketServer to send as broadcast callback into Kafka consumer.
  */
 const wss = new WebSocketServer({ server })
 
 /*
  * Configure Kafka consumer
- *
  */
 const consumer = new Consumer({
   broadcast: (data) =>
