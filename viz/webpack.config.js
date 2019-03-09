@@ -28,14 +28,15 @@ const htmlPlugin = (options) =>
 
 module.exports = {
   devtool: PRODUCTION ? 'source-map' : 'cheap-module-source-map',
-  mode: PRODUCTION ? 'production' : 'development',
-  entry: path.join(__dirname, 'src', 'index.js'),
+  mode: PRODUCTION ? 'production' : 'development', // See https://webpack.js.org/concepts/mode/
+  // entry: path.join(__dirname, 'src', 'index.js'), // ./src/index.js is already the default.
   output: {
     path: path.join(__dirname, 'dist'),
     filename: `app${PRODUCTION ? '.[hash]' : ''}.js`
   },
   stats: 'minimal',
   module: {
+    // Loaders https://webpack.js.org/concepts/#loaders
     rules: [
       {
         test: /.js$/,
@@ -52,7 +53,7 @@ module.exports = {
       },
       {
         test: /.pug$/,
-        use: ['pug-loader']
+        use: ['pug-loader'] // See https://github.com/pugjs/pug-loader
       },
       {
         test: /\.css$/,
@@ -64,7 +65,7 @@ module.exports = {
             : 'style-loader',
           { loader: 'css-loader', options: { importLoaders: 1 } },
           {
-            loader: 'postcss-loader',
+            loader: 'postcss-loader', // See https://www.npmjs.com/package/postcss-loader
             options: {
               ident: 'postcss',
               plugins: (loader) => [

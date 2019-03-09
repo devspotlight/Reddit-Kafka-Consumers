@@ -1,4 +1,5 @@
 ## kafka-stream-viz
+
 > Based on https://github.com/heroku/kafka-demo
 
 A simple app that streams tweets containing a specified set of keywords to web browser clients.
@@ -6,6 +7,7 @@ A simple app that streams tweets containing a specified set of keywords to web b
 Keywords are specified in the ~~kafka-tweets~~**generate_data** app. They are read from a Kafka topic named ~~'test'~~`ecommerce-logs` from the 0th (zeroth) partition in that topic.
 
 #### Development Setup
+
 **Node > [v10.13](https://nodejs.org/dist/v10.13.0/docs/api/) "Dubnium" required**
 
 ```sh

@@ -1,5 +1,5 @@
-const Kafka = require('no-kafka')
-const Moment = require('moment')
+const Kafka = require('no-kafka') // See https://github.com/oleksiyk/kafka
+const Moment = require('moment') // See http://momentjs.com/docs/
 
 /**
  * Kafka Consumer class
@@ -8,10 +8,11 @@ const Moment = require('moment')
 module.exports = class Consumer {
   /**
    * Constructs a Kafka consumer that will process the data stream?
-   * @param interval Used to set up the consumer.
-   * @param broadcast Callback to send data processed by the consumer to.
-   * @param topic Used as clientId option for SimpleConsumer class (no-kafka module).
-   * @param consumer See remaining SimpleConsumerOptions interface (no-kafka module).
+   * @param interval    Used to set up the consumer.
+   * @param broadcast   Callback to send data processed by the consumer to.
+   * @param topic       Used as clientId option for no-kafka SimpleConsumer class.
+   * @param consumer    See remaining no-kafka SimpleConsumerOptions interface in
+   *                    https://github.com/oleksiyk/kafka/blob/ec699b07482c829d6b04d920e5ff669fe9461b55/types/simple_consumer.d.ts#L11
    */
   constructor({ interval, broadcast, topic, consumer }) {
     this._broadcast = broadcast
@@ -21,6 +22,7 @@ module.exports = class Consumer {
     this.latestTime = null
     this.categories = {}
 
+    // See https://github.com/oleksiyk/kafka/tree/8a0802a53ddaf30747cfb735ee689376c5d51f8a#simpleconsumer
     this._consumer = new Kafka.SimpleConsumer({
       idleTimeout: this._interval,
       connectionTimeout: 10 * 1000,
