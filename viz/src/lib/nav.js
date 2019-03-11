@@ -1,37 +1,23 @@
 module.exports = class Nav {
-  constructor(options) {
-    this.legend = document.querySelector(options.legend)
-    this.architectureLink = document.querySelector(options.architecture)
-    this.main = document.querySelector('main')
-    this.architectureFrame = document.querySelector('.architecture-iframe')
-
-    this.architecture()
+  /**
+   * Constructs a data legend
+   * @param legend container selector
+   */
+  constructor(legend) {
+    this.legend = document.querySelector(legend)
   }
 
-  formatData(data) {
-    return Object.keys(data)
-  }
-
-  architecture() {
-    this.architectureLink.addEventListener('click', () => {
-      const isOpen = this.main.classList.contains('open')
-      if (isOpen) {
-        this.architectureFrame.removeAttribute('src')
-        this.main.classList.remove('open')
-      } else {
-        this.architectureFrame.setAttribute(
-          'src',
-          '/public/kafka-diagram/kafka-diagram-v2.html'
-        )
-        this.main.classList.add('open')
-      }
-    })
-  }
-
+  /**
+   * See `aggregate` usage in ../../src/index.js
+   */
   init() {}
 
+  /**
+   * Keeps data legends include all data topics received.
+   * @param data
+   */
   update(data) {
-    this.formatData(data).forEach((topic, index) => {
+    Object.keys(data).forEach((topic, index) => {
       if (!this.legend.querySelector(`#topic-${topic}`)) {
         const li = document.createElement('li')
         li.textContent = topic

@@ -9,33 +9,17 @@ const LiveReloadPlugin = require('webpack-livereload-plugin')
 
 const PRODUCTION = process.env.NODE_ENV === 'production'
 
-const DEFAULT_THEME = 'heroku'
-const THEMES = ['salesforce', DEFAULT_THEME]
-const THEME = THEMES.includes(process.env.THEME)
-  ? process.env.THEME
-  : DEFAULT_THEME
-
-const htmlPlugin = (options) =>
-  new HtmlPlugin({
-    production: PRODUCTION,
-    minify: PRODUCTION ? { collapseWhitespace: true } : false,
-    filename: 'index.html',
-    title: 'Product Analytics',
-    inject: false,
-    template: path.join(__dirname, 'views', 'index.pug'),
-    ...options
-  })
-
 module.exports = {
   devtool: PRODUCTION ? 'source-map' : 'cheap-module-source-map',
-  mode: PRODUCTION ? 'production' : 'development',
-  entry: path.join(__dirname, 'src', 'index.js'),
+  mode: PRODUCTION ? 'production' : 'development', // See https://webpack.js.org/concepts/mode/
+  // entry: path.join(__dirname, 'src', 'index.js'), // ./src/index.js is already the default.
   output: {
     path: path.join(__dirname, 'dist'),
     filename: `app${PRODUCTION ? '.[hash]' : ''}.js`
   },
   stats: 'minimal',
   module: {
+    // Loaders https://webpack.js.org/concepts/#loaders
     rules: [
       {
         test: /.js$/,
@@ -52,7 +36,7 @@ module.exports = {
       },
       {
         test: /.pug$/,
-        use: ['pug-loader']
+        use: ['pug-loader'] // See https://github.com/pugjs/pug-loader
       },
       {
         test: /\.css$/,
@@ -64,7 +48,7 @@ module.exports = {
             : 'style-loader',
           { loader: 'css-loader', options: { importLoaders: 1 } },
           {
-            loader: 'postcss-loader',
+            loader: 'postcss-loader', // See https://www.npmjs.com/package/postcss-loader
             options: {
               ident: 'postcss',
               plugins: (loader) => [
@@ -93,8 +77,16 @@ module.exports = {
     ]
   },
   plugins: [
-    htmlPlugin({
-      bodyClass: THEME
+    // See https://webpack.js.org/concepts/plugins
+    new HtmlPlugin({
+      // See https://github.com/jantimon/html-webpack-plugin#options
+      production: PRODUCTION,
+      minify: PRODUCTION ? { collapseWhitespace: true } : false,
+      filename: 'index.html',
+      title: 'Reddit Comment Analytics',
+      inject: false,
+      template: path.join(__dirname, 'views', 'index.pug'),
+      bodyClass: 'heroku'
     }),
     new CleanPlugin(['dist'], { root: __dirname, verbose: false }),
     new webpack.DefinePlugin({
@@ -105,15 +97,16 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: '[name].[contenthash].css'
     }),
-    // Add other themes in dev mode for easier viewing
-    ...(PRODUCTION
-      ? []
-      : THEMES.map((theme) =>
-          htmlPlugin({
-            filename: `${theme}.html`,
-            bodyClass: theme
-          })
-        )),
+    // // Add other themes in dev mode for easier viewing
+    // ...(PRODUCTION
+    //   ? []
+    //   : THEMES.map((theme) =>
+    //       htmlPlugin({
+    //         filename: `${theme}.html`,
+    //         bodyClass: theme
+    //       })
+    //     )),
+    // Live reload for dev
     !PRODUCTION && new LiveReloadPlugin({ quiet: true })
   ].filter(Boolean)
 }

@@ -1,8 +1,12 @@
-import * as d3 from 'd3'
-import _ from 'lodash'
+import * as d3 from 'd3' // See https://d3js.org/
+import _ from 'lodash' // See https://lodash.com/
 import SizedArray from './sizedArray'
 
 export default class StreamChart {
+  /**
+   * Constructs a StremChart instance.
+   * @param options
+   */
   constructor(options) {
     this.container = document.querySelector(options.selector)
 
@@ -119,6 +123,10 @@ export default class StreamChart {
     this.updateStacks()
   }
 
+  /**
+   * Attempts to format and append the latest data, then updates the stream chart.
+   * @param data
+   */
   update(data) {
     if (!this._initialized) return
 
