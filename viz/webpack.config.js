@@ -9,23 +9,6 @@ const LiveReloadPlugin = require('webpack-livereload-plugin')
 
 const PRODUCTION = process.env.NODE_ENV === 'production'
 
-const DEFAULT_THEME = 'heroku'
-const THEMES = ['salesforce', DEFAULT_THEME]
-const THEME = THEMES.includes(process.env.THEME)
-  ? process.env.THEME
-  : DEFAULT_THEME
-
-const htmlPlugin = (options) =>
-  new HtmlPlugin({
-    production: PRODUCTION,
-    minify: PRODUCTION ? { collapseWhitespace: true } : false,
-    filename: 'index.html',
-    title: 'Product Analytics',
-    inject: false,
-    template: path.join(__dirname, 'views', 'index.pug'),
-    ...options
-  })
-
 module.exports = {
   devtool: PRODUCTION ? 'source-map' : 'cheap-module-source-map',
   mode: PRODUCTION ? 'production' : 'development', // See https://webpack.js.org/concepts/mode/
@@ -94,8 +77,16 @@ module.exports = {
     ]
   },
   plugins: [
-    htmlPlugin({
-      bodyClass: THEME
+    // See https://webpack.js.org/concepts/plugins
+    new HtmlPlugin({
+      // See https://github.com/jantimon/html-webpack-plugin#options
+      production: PRODUCTION,
+      minify: PRODUCTION ? { collapseWhitespace: true } : false,
+      filename: 'index.html',
+      title: 'Comment Analytics',
+      inject: false,
+      template: path.join(__dirname, 'views', 'index.pug'),
+      bodyClass: 'heroku'
     }),
     new CleanPlugin(['dist'], { root: __dirname, verbose: false }),
     new webpack.DefinePlugin({
@@ -106,15 +97,16 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: '[name].[contenthash].css'
     }),
-    // Add other themes in dev mode for easier viewing
-    ...(PRODUCTION
-      ? []
-      : THEMES.map((theme) =>
-          htmlPlugin({
-            filename: `${theme}.html`,
-            bodyClass: theme
-          })
-        )),
+    // // Add other themes in dev mode for easier viewing
+    // ...(PRODUCTION
+    //   ? []
+    //   : THEMES.map((theme) =>
+    //       htmlPlugin({
+    //         filename: `${theme}.html`,
+    //         bodyClass: theme
+    //       })
+    //     )),
+    // Live reload for dev
     !PRODUCTION && new LiveReloadPlugin({ quiet: true })
   ].filter(Boolean)
 }

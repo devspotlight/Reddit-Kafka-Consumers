@@ -14,9 +14,9 @@ if [ "${NODE_ENV}" = "development" ]; then
   export KAFKA_URL="$(heroku config:get KAFKA_URL)"
   export KAFKA_CLIENT_CERT="$(heroku config:get KAFKA_CLIENT_CERT)"
   export KAFKA_CLIENT_CERT_KEY="$(heroku config:get KAFKA_CLIENT_CERT_KEY)"
-  # TODO: use env var from heroku instance
+  # TODO: use env var from heroku instance?
   # export KAFKA_TOPIC="$(heroku config:get KAFKA_TOPIC -a twitter-ingest)"
-  export KAFKA_TOPIC="ecommerce-logs"
+  export KAFKA_TOPIC="reddit-comments"
   export KAFKA_PREFIX=$(heroku config:get KAFKA_PREFIX)
 fi
 
@@ -47,8 +47,8 @@ fi
 
 # Start it up
 if [ "${NODE_ENV}" = "development" ]; then
-  echo "Running node $NODE_DEBUG_OPTION app.js"
-  node $NODE_DEBUG_OPTION app.js
+  echo "Running nodemon $NODE_DEBUG_OPTION app.js"
+  nodemon $NODE_DEBUG_OPTION app.js
 else
   node app.js
 fi
