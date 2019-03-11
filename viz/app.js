@@ -30,6 +30,7 @@ if (PRODUCTION) {
     res.sendFile(path.join(__dirname, 'dist/index.html'))
   )
 } else {
+  // For dev, we use the webpack-dev-middleware module for express
   app.use(history({ verbose: false }))
   app.use(webpackDev(webpack(webpackConfig), { stats: 'minimal' }))
 }
@@ -67,11 +68,15 @@ const consumer = new Consumer({
 consumer
   .init()
   .catch((err) => {
-    console.error(`Consumer could not be initialized: ${err}`)
+    /* eslint no-console:1 */ console.error(
+      `Consumer could not be initialized: ${err}`
+    )
     if (PRODUCTION) throw err
   })
   .then(() => {
     server.listen(PORT, () =>
-      console.info(`http/ws server listening on http://localhost:${PORT}`)
+      /* eslint no-console:1 */ console.info(
+        `http/ws server listening on http://localhost:${PORT}`
+      )
     )
   })

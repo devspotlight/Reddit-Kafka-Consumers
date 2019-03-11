@@ -83,7 +83,7 @@ module.exports = {
       production: PRODUCTION,
       minify: PRODUCTION ? { collapseWhitespace: true } : false,
       filename: 'index.html',
-      title: 'Comment Analytics',
+      title: 'Reddit Comment Analytics',
       inject: false,
       template: path.join(__dirname, 'views', 'index.pug'),
       bodyClass: 'heroku'

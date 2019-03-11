@@ -5,27 +5,6 @@ module.exports = class Nav {
    */
   constructor(legend) {
     this.legend = document.querySelector(legend)
-
-    /*
-     * Enable "Architecture" button (coupled to ../../views/index.pug)
-     */
-    let architectureLink = document.querySelector('.architecture-link')
-    let main = document.querySelector('main')
-    let architectureFrame = document.querySelector('.architecture-iframe')
-
-    architectureLink.addEventListener('click', () => {
-      const isOpen = main.classList.contains('open')
-      if (isOpen) {
-        architectureFrame.removeAttribute('src')
-        main.classList.remove('open')
-      } else {
-        architectureFrame.setAttribute(
-          'src',
-          '/public/kafka-diagram/kafka-diagram-v2.html'
-        )
-        main.classList.add('open')
-      }
-    })
   }
 
   /**

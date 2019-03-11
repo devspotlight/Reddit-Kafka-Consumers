@@ -47,8 +47,8 @@ fi
 
 # Start it up
 if [ "${NODE_ENV}" = "development" ]; then
-  echo "Running nodemon $NODE_DEBUG_OPTION app.js"
-  nodemon $NODE_DEBUG_OPTION app.js
+  echo "Running nodemon --ignore src/ $NODE_DEBUG_OPTION app.js"
+  nodemon --ignore src/ $NODE_DEBUG_OPTION app.js
 else
   node app.js
 fi
