@@ -123,6 +123,10 @@ export default class StreamChart {
     this.updateStacks()
   }
 
+  /**
+   * Attempts to format and append the latest data, then updates the stream chart.
+   * @param data
+   */
   update(data) {
     if (!this._initialized) return
 

@@ -1,5 +1,7 @@
+/* eslint no-console: 0 */
+
 const Kafka = require('no-kafka') // See https://github.com/oleksiyk/kafka
-// const Moment = require('moment') // See http://momentjs.com/docs/
+const moment = require('moment') // See http://momentjs.com/docs/
 
 /**
  * Kafka Consumer class
@@ -43,6 +45,7 @@ module.exports = class Consumer {
     return consumer
       .init()
       .then(() => consumer.subscribe(topic, this.onMessage.bind(this)))
+    // TODO: bind predictBotOrTroll here instead of calling from onMessage?
   }
 
   /**
@@ -51,10 +54,25 @@ module.exports = class Consumer {
    */
   onMessage(messageSet) {
     const items = messageSet.map((m) =>
-      JSON.parse(m.message.value.toString('utf8'))
+      this.predictBotOrTroll(JSON.parse(m.message.value.toString('utf8')))
     )
     console.debug('Consumer.onMessage items', items)
 
     this._broadcast(items)
+  }
+
+  /**
+   * Mock ML API method
+   * @param data Reddit comment data from Kafka topic
+   * @returns {{datetime: moment.Moment, troll_score: number, comment: *, bot_score: number, username}}
+   */
+  predictBotOrTroll(data) {
+    return {
+      datetime: moment.unix(data.created_utc).format('MMM Do HH:mm:ss z'),
+      username: data.author,
+      comment: data.body,
+      troll_score: 0.5,
+      bot_score: 0.5
+    }
   }
 }

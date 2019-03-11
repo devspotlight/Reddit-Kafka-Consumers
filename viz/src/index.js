@@ -1,10 +1,16 @@
+/* eslint no-console: 0 */
+
 import '../styles/style.css'
 
-// TODO Consider adding http://square.github.io/crossfilter/
+// TODO: Consider adding http://square.github.io/crossfilter/
 
 // import Nav from './lib/nav'
 // import Stream from './lib/stream'
-// import { MAX_SIZE, MAX_BUFFER_SIZE, INTERVAL } from '../consumer/constants'
+import DataTable from './lib/data-table'
+import TrendGraph from './lib/trend-graph'
+
+// import { MAX_SIZE, BUFFER_SIZE, INTERVAL } from '../consumer/constants'
+import { MAX_SIZE, BUFFER_SIZE } from '../consumer/constants'
 
 // Enable "Architecture" button (coupled to ../../views/index.pug)
 let architectureLink = document.querySelector('.architecture-link')
@@ -34,9 +40,11 @@ const aggregate = [
   //   transition: INTERVAL,
   //   x: 'time',
   //   y: 'avgPerSecond',
-  //   maxSize: MAX_BUFFER_SIZE,
+  //   maxSize: BUFFER_SIZE,
   //   maxDisplaySize: MAX_SIZE
   // })
+  new DataTable('.data-table table tbody', MAX_SIZE),
+  new TrendGraph('#trend-graph', BUFFER_SIZE)
 ]
 
 const url = `ws${window.location.href.match(/^http(s?:\/\/.*)\/.*$/)[1]}`
