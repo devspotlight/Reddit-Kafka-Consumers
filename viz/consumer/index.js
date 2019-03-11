@@ -32,8 +32,8 @@ module.exports = class Consumer {
   }
 
   /**
-   * Initializes Kafka consumer,
-   * subscribing topic to `onMessage` and returning `cullAndBroadcast` to on `this._interval`
+   * Initializes Kafka consumer
+   * by subscribing topic to `onMessage`
    * @returns {Bluebird<number>} this consumer (promise)
    */
   init() {
@@ -46,14 +46,14 @@ module.exports = class Consumer {
   }
 
   /**
-   * Subscribed to Kafka topic. Prepares the Kafka message data
+   * Prepares the Kafka message data. (Subscribed to Kafka topic in `init`)
    * @param messageSet set of latest messages from Kafka topic
    */
   onMessage(messageSet) {
     const items = messageSet.map((m) =>
       JSON.parse(m.message.value.toString('utf8'))
     )
-    // /* eslint no-console:1 */ console.debug('Consumer.onMessage items', items)
+    console.debug('Consumer.onMessage items', items)
 
     this._broadcast(items)
   }

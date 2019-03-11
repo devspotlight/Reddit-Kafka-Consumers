@@ -1,4 +1,4 @@
-/* eslint no-console:0 */
+/* eslint no-console: 0 */
 
 const path = require('path')
 const server = require('http').createServer()
@@ -48,7 +48,7 @@ const wss = new WebSocketServer({ server })
  */
 const consumer = new Consumer({
   broadcast: (msg) => {
-    /* eslint no-console:1 */ console.debug(`broadcast ${msg.length} msgs`, msg)
+    console.debug(`broadcast ${msg.length} msgs`, msg)
     wss.clients.forEach((client) => client.send(JSON.stringify(msg)))
   },
   interval: constants.INTERVAL,
@@ -63,20 +63,16 @@ const consumer = new Consumer({
 })
 
 /*
- * Start Kafka consumer
+ * Attempts to start the Kafka consumer
  */
 consumer
   .init()
   .catch((err) => {
-    /* eslint no-console:1 */ console.error(
-      `Consumer could not be initialized: ${err}`
-    )
+    console.error(`Kafka consumer could not be initialized: ${err}`)
     if (PRODUCTION) throw err
   })
   .then(() => {
     server.listen(PORT, () =>
-      /* eslint no-console:1 */ console.info(
-        `http/ws server listening on http://localhost:${PORT}`
-      )
+      console.info(`http/ws server listening on http://localhost:${PORT}`)
     )
   })

@@ -24,7 +24,9 @@ architectureLink.addEventListener('click', () => {
   }
 })
 
-// Combines GUI elements (coupled to ../../views/index.pug) as GUI elements
+/*
+ * Combines GUI elements into (coupled to ../../views/index.pug)
+ */
 const aggregate = [
   // new Nav('.footer-legend ul'),
   // new Stream({
@@ -45,7 +47,7 @@ aggregate.forEach((a) => a.init())
 
 ws.onmessage = (e) => {
   const data = JSON.parse(e.data)
-  /* eslint no-console:1 */ console.log(data)
+  console.log(data)
 
   // Update all GUI elements with websocket data stream
   aggregate.forEach((a) => a.update(data))
