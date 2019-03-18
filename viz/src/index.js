@@ -4,13 +4,11 @@ import '../styles/style.css'
 
 // TODO: Consider adding http://square.github.io/crossfilter/
 
-// import Nav from './lib/nav'
-// import Stream from './lib/stream'
 import DataTable from './lib/data-table'
 import TrendGraph from './lib/trend-graph'
+import TopThree from './lib/top-three'
 
-// import { MAX_SIZE, BUFFER_SIZE, INTERVAL } from '../consumer/constants'
-import { MAX_SIZE, BUFFER_SIZE } from '../consumer/constants'
+import { MAX_SIZE } from '../consumer/constants'
 
 // Enable "Architecture" button (coupled to ../../views/index.pug)
 let architectureLink = document.querySelector('.architecture-link')
@@ -34,17 +32,10 @@ architectureLink.addEventListener('click', () => {
  * Combines GUI elements into (coupled to ../../views/index.pug)
  */
 const aggregate = [
-  // new Nav('.footer-legend ul'),
-  // new Stream({
-  //   selector: '.chart-stream .chart',
-  //   transition: INTERVAL,
-  //   x: 'time',
-  //   y: 'avgPerSecond',
-  //   maxSize: BUFFER_SIZE,
-  //   maxDisplaySize: MAX_SIZE
-  // })
-  new DataTable('.data-table table tbody', MAX_SIZE),
-  new TrendGraph('#trend-graph', BUFFER_SIZE)
+  new DataTable('.data-table table tbody', '#threshold', MAX_SIZE, '#pause'),
+  new TrendGraph('#trend-graph', MAX_SIZE),
+  new TopThree('#trolls', 'li', 'pos'),
+  new TopThree('#bots', 'li', 'neg')
 ]
 
 const url = `ws${window.location.href.match(/^http(s?:\/\/.*)\/.*$/)[1]}`
@@ -55,7 +46,7 @@ aggregate.forEach((a) => a.init())
 
 ws.onmessage = (e) => {
   const data = JSON.parse(e.data)
-  console.log(data)
+  // console.log(`${data.length} new messages`, data)
 
   // Update all GUI elements with websocket data stream
   aggregate.forEach((a) => a.update(data))

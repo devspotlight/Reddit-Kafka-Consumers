@@ -23,13 +23,15 @@ html
       .container
         .chart-container.table-stream
           .chart-inputs
-            .chart-input(style={width: '60%'})
+            .chart-input(style={width: '50%'})
               span Subreddit to monitor:
               input(disabled='disabled' value='r/politics')
-            .chart-input(style={width: '40%'})
+            .chart-input(style={width: '30%'})
               span Display threshold:
               input#threshold(value='20' style={width: '3em'})
               | %
+            .chart-input(style={width: '20%'})
+              button#pause Pause
           .data-table.loading
             table
               thead
@@ -44,19 +46,21 @@ html
         .chart-container.stats-stream
           span.title Stats
           .stats-top3
-            p Top trolls in last day
-            ol
-              li#troll1
-              li#troll2
-              li#troll3
+            //- TODO: Top strolls in the last day!
+            p Top trolls since this page was open
+            ol#trolls
+              li
+              li
+              li
           .stats-top3
-            p Top bots in last day
-            ol
-              li#bot1
-              li#bot2
-              li#bot3
+            //- TODO: Top bots in the last day!
+            p Top bots since this page was open
+            ol#bots
+              li
+              li
+              li
           .stats-trend.loading
-            p Trend graph
+            p Number of bots and trolls in the last hour
             #trend-graph
               //- real-time trend graph goes here!
       footer.footer-legend Learn how we built this at blog.heroku.com
