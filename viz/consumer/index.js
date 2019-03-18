@@ -53,26 +53,35 @@ module.exports = class Consumer {
    * @param messageSet set of latest messages from Kafka topic
    */
   onMessage(messageSet) {
-    const items = messageSet.map((m) =>
-      this.predictBotOrTroll(JSON.parse(m.message.value.toString('utf8')))
-    )
-    console.debug('Consumer.onMessage items', items)
+    // console.debug(`Consumer.onMessage messageSet`, messageSet)
 
-    this._broadcast(items)
+    // Parses Kafka message strings to JSON
+    const msgs = messageSet.map((m) =>
+      JSON.parse(m.message.value.toString('utf8'))
+    )
+    // TODO: data validation? E.g. whitelist
+    console.debug(`Consumer.onMessage ${msgs.length} original msgs`, msgs)
+
+    // Processes data via ML prediction
+    const rows = msgs.map((i) => this.predictBotOrTroll(i))
+    // console.debug(`Consumer.onMessage ${rows.length} predicted msgs`, rows)
+
+    this._broadcast(rows)
   }
 
   /**
-   * Mock ML API method
-   * @param data Reddit comment data from Kafka topic
-   * @returns {{datetime: moment.Moment, troll_score: number, comment: *, bot_score: number, username}}
+   * Mock ML bot/troll prediction function
+   * TODO: Use actual ML API
+   * @returns {{datetime: string, username: string, comment: string, score: number}}
    */
   predictBotOrTroll(data) {
+    // TODO: `data` validation
+    // TODO: Integrate ML web service @ https://botidentification-comments.herokuapp.com/
     return {
       datetime: moment.unix(data.created_utc).format('MMM Do HH:mm:ss z'),
       username: data.author,
       comment: data.body,
-      troll_score: 0.5,
-      bot_score: 0.5
+      score: 2 * Math.random() - 1 // Range: -1.0 - 1.0
     }
   }
 }

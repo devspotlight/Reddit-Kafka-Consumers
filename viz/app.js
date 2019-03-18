@@ -47,9 +47,9 @@ const wss = new WebSocketServer({ server })
  * Will broadcast JSON (assumed) messages to all wss clients
  */
 const consumer = new Consumer({
-  broadcast: (msg) => {
-    console.debug(`broadcast ${msg.length} msgs`, msg)
-    wss.clients.forEach((client) => client.send(JSON.stringify(msg)))
+  broadcast: (msgs) => {
+    console.debug(`broadcast ${msgs.length} msgs`, msgs)
+    wss.clients.forEach((client) => client.send(JSON.stringify(msgs)))
   },
   interval: constants.INTERVAL,
   topic: constants.KAFKA_TOPIC,

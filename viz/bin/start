@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# Based on https://github.com/heroku/kafka-demo/blob/master/bin/start
+
 set -eo pipefail
 
 function cleanup {
@@ -10,6 +12,7 @@ function cleanup {
 }
 trap cleanup SIGINT SIGTERM
 
+# Set up env vars (dev)
 if [ "${NODE_ENV}" = "development" ]; then
   export KAFKA_URL="$(heroku config:get KAFKA_URL)"
   export KAFKA_CLIENT_CERT="$(heroku config:get KAFKA_CLIENT_CERT)"
@@ -40,8 +43,9 @@ rm -f client.crt client.key
 echo -n "$KAFKA_CLIENT_CERT" > client.crt
 echo -n "$KAFKA_CLIENT_CERT_KEY" > client.key
 
+# Build dist files (prod)
 if [ "${NODE_ENV}" = "production" ]; then
-  # Build dist files in production
+  echo "Building client-side dist."
   npm run build
 fi
 
@@ -50,7 +54,6 @@ if [ "${NODE_ENV}" = "development" ]; then
   echo "Running nodemon --ignore src/ $NODE_DEBUG_OPTION app.js"
   nodemon --ignore src/ $NODE_DEBUG_OPTION app.js
 else
+  echo "Starting server-side app"
   node app.js
 fi
-
-# File from https://github.com/heroku/kafka-demo/blob/master/bin/start
