@@ -59,6 +59,8 @@ export default class DataTable {
    * @param data
    */
   update(data) {
+    // console.log('DataTable.update: New data', data)
+    //
     // Filter out comments with a score above the threshold
     let threshold = Number(this._thld.node().value) / 100
     if (Number.isNaN(threshold)) threshold = 0.2
@@ -78,15 +80,23 @@ export default class DataTable {
       rows.exit().remove()
 
       let tr = rows.enter().append('tr')
-      tr.append('td').text((data) => data.datetime)
       tr.append('td').text((data) => data.username)
-      tr.append('td').text((data) => `${data.comment.slice(0, 10)}...`)
+      tr.append('td')
+        .append('a')
+        .attr('href', (data) => `https://www.reddit.com/${data.username}`)
+        .attr('target', '_blank')
+        .text((data) => data.username)
+      tr.append('td')
+        .append('a')
+        .attr(
+          'href',
+          (data) =>
+            `https://www.reddit.com/r/politics/comments/${data.link_hash}`
+        )
+        .attr('target', '_blank')
+        .text((data) => `${data.comment.slice(0, 50)}...`)
       tr.append('td').text((data) => data.score.toFixed(2))
       tr.append('td').text((data) => data.score.toFixed(2))
-
-      // Scroll to bottom of table div
-      let tableDiv = d3.select('.data-table').node()
-      tableDiv.scrollTop = tableDiv.scrollHeight
     }
     //
     // console.log('DataTable.update: New row data', this._maxSize, this._rowData.slice(0))

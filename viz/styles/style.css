@@ -25,7 +25,7 @@ body {
   position: relative;
   font-family: Helvetica, Arial, sans-serif;
   overflow-y: hidden;
-  min-width: 1000px;
+  min-width: 1200px;
 }
 
 header {
@@ -221,6 +221,7 @@ main {
         height: 100%;
         border: 1px solid gray;
         overflow: scroll;
+        font-size: 12px;
 
         table {
           width: 100%;

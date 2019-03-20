@@ -44,25 +44,25 @@ html
               tbody
                 //- real time data table rows start here!
         .chart-container.stats-stream
-          span.title Stats
-          .stats-top3
-            //- TODO: Top strolls in the last day!
-            p Top trolls since this page was open
-            ol#trolls
-              li
-              li
-              li
-          .stats-top3
-            //- TODO: Top bots in the last day!
-            p Top bots since this page was open
-            ol#bots
-              li
-              li
-              li
-          .stats-trend.loading
-            p Number of bots and trolls in the last hour
-            #trend-graph
-              //- real-time trend graph goes here!
+          //span.title Stats
+          //.stats-top3
+          //  //- TODO: Top strolls in the last day!
+          //  p Top trolls
+          //  ol#trolls
+          //    li
+          //    li
+          //    li
+          //.stats-top3
+          //  //- TODO: Top bots in the last day!
+          //  p Top bots
+          //  ol#bots
+          //    li
+          //    li
+          //    li
+          //.stats-trend.loading
+          //  //p Number of bots and trolls
+          //  //#trend-graph
+          //  //  //- real-time trend graph goes here!
       footer.footer-legend Learn how we built this at blog.heroku.com
     for js in htmlWebpackPlugin.files.js
       script(src=js)

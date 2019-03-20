@@ -6,7 +6,7 @@ import '../styles/style.css'
 
 import DataTable from './lib/data-table'
 import TrendGraph from './lib/trend-graph'
-import TopThree from './lib/top-three'
+// import TopThree from './lib/top-three'
 
 import { MAX_SIZE } from '../consumer/constants'
 
@@ -33,9 +33,9 @@ architectureLink.addEventListener('click', () => {
  */
 const aggregate = [
   new DataTable('.data-table table tbody', '#threshold', MAX_SIZE, '#pause'),
-  new TrendGraph('#trend-graph', MAX_SIZE),
-  new TopThree('#trolls', 'li', 'pos'),
-  new TopThree('#bots', 'li', 'neg')
+  new TrendGraph('#trend-graph', MAX_SIZE)
+  // new TopThree('#trolls', 'li', 'pos')
+  // new TopThree('#bots', 'li', 'neg')
 ]
 
 const url = `ws${window.location.href.match(/^http(s?:\/\/.*)\/.*$/)[1]}`

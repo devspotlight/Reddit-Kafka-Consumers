@@ -81,6 +81,7 @@ module.exports = class Consumer {
       datetime: moment.unix(data.created_utc).format('MMM Do HH:mm:ss z'),
       username: data.author,
       comment: data.body,
+      link_hash: data.link_id.slice(3),
       score: 2 * Math.random() - 1 // Range: -1.0 - 1.0
     }
   }

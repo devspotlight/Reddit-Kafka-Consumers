@@ -54,7 +54,7 @@ export default class MinThree {
       let usr = this._usrScores.find((usr) => usr.username == msg.username)
 
       if (usr) {
-        console.log('Existing user', msg.username, usr)
+        // console.log('Existing user', msg.username, usr)
         // If the user is already in our stats object:
 
         usr.score_avg =
@@ -65,11 +65,11 @@ export default class MinThree {
       } else {
         // If the user is new to our stats:
 
-        console.log('New user', {
-          username: msg.username,
-          comment_count: 1,
-          score_avg: msg.score
-        })
+        // console.log('New user', {
+        //   username: msg.username,
+        //   comment_count: 1,
+        //   score_avg: msg.score
+        // })
         this._usrScores.push({
           username: msg.username,
           comment_count: 1,
@@ -77,11 +77,11 @@ export default class MinThree {
         })
       }
     })
-    console.log(
-      'MinThree.update: Update scores',
-      this._container.attr('id'),
-      this._usrScores.slice(0)
-    )
+    // console.log(
+    //   'MinThree.update: Update scores',
+    //   this._container.attr('id'),
+    //   this._usrScores.slice(0)
+    // )
 
     // Keep this._usrScores sorted by min `score_avg`
     this._usrScores.sort((usrA, usrB) => {
@@ -89,11 +89,11 @@ export default class MinThree {
       else if (usrA.score_avg == usrB.score_avg) return 0
       else return -1
     })
-    console.log(
-      'MinThree.update: Sort scores',
-      this._container.attr('id'),
-      this._usrScores.slice(0)
-    )
+    // console.log(
+    //   'MinThree.update: Sort scores',
+    //   this._container.attr('id'),
+    //   this._usrScores.slice(0)
+    // )
 
     // Update display of min 3 values
     if (0 in this._usrScores) this.min3[0].text(this._usrScores[0].username)
