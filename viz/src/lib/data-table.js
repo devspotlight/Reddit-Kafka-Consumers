@@ -59,8 +59,8 @@ export default class DataTable {
    * @param data
    */
   update(data) {
-    // console.log('DataTable.update: New data', data)
-    //
+    console.log('DataTable.update: New data', data)
+
     // Filter out comments with a score above the threshold
     let threshold = Number(this._thld.node().value) / 100
     if (Number.isNaN(threshold)) threshold = 0.2
@@ -80,23 +80,23 @@ export default class DataTable {
       rows.exit().remove()
 
       let tr = rows.enter().append('tr')
-      tr.append('td').text((data) => data.username)
+      tr.append('td').text((cmt) => cmt.datetime)
       tr.append('td')
         .append('a')
-        .attr('href', (data) => `https://www.reddit.com/${data.username}`)
+        .attr('href', (cmt) => `https://www.reddit.com/${cmt.username}`)
         .attr('target', '_blank')
-        .text((data) => data.username)
+        .text((cmt) => cmt.username)
       tr.append('td')
         .append('a')
         .attr(
           'href',
-          (data) =>
-            `https://www.reddit.com/r/politics/comments/${data.link_hash}`
+          (cmt) =>
+            `https://www.reddit.com/r/politics/comments/${cmt.link_hash}`
         )
         .attr('target', '_blank')
-        .text((data) => `${data.comment.slice(0, 50)}...`)
-      tr.append('td').text((data) => data.score.toFixed(2))
-      tr.append('td').text((data) => data.score.toFixed(2))
+        .text((cmt) => `${cmt.comment.slice(0, 50)}...`)
+      tr.append('td').text((cmt) => cmt.score.toFixed(2))
+      tr.append('td').text((cmt) => cmt.score.toFixed(2))
     }
     //
     // console.log('DataTable.update: New row data', this._maxSize, this._rowData.slice(0))
