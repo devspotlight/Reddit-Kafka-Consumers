@@ -27,9 +27,9 @@ html
               span Subreddit to monitor:
               input(disabled='disabled' value='r/politics')
             .chart-input(style={width: '30%'})
-              span Display threshold:
-              input#threshold(value='20' style={width: '3em'})
-              | %
+            //-  span Display threshold:
+            //-  input#threshold(value='20' style={width: '3em'})
+            //-  | %
             .chart-input(style={width: '20%'})
               button#pause Pause
           .data-table.loading
@@ -39,14 +39,13 @@ html
                   th Time
                   th Username
                   th Comment
-                  th Troll Likelihood
-                  th Bot Likelihood
+                  th Behavior
               tbody
                 //- real time data table rows start here!
         .chart-container.stats-stream
           //span.title Stats
           //.stats-top3
-          //  //- TODO: Top strolls in the last day!
+          //  //- TODO: Top trolls in the last day!
           //  p Top trolls
           //  ol#trolls
           //    li

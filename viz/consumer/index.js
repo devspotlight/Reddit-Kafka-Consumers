@@ -1,7 +1,6 @@
 /* eslint no-console: 0 */
 
 const Kafka = require('no-kafka') // See https://github.com/oleksiyk/kafka
-const moment = require('moment') // See http://momentjs.com/docs/
 
 /**
  * Kafka Consumer class
@@ -45,11 +44,11 @@ module.exports = class Consumer {
     return consumer
       .init()
       .then(() => consumer.subscribe(topic, this.onMessage.bind(this)))
-    // TODO: bind predictBotOrTroll here instead of calling from onMessage?
   }
 
   /**
-   * Prepares the Kafka message data. (Subscribed to Kafka topic in `init`)
+   * Prepares the Kafka message data and calls this._broadcast with it.
+   * Subscribed to Kafka topic in `init`
    * @param messageSet set of latest messages from Kafka topic
    */
   onMessage(messageSet) {
@@ -59,30 +58,9 @@ module.exports = class Consumer {
     const msgs = messageSet.map((m) =>
       JSON.parse(m.message.value.toString('utf8'))
     )
+    // console.debug(`Consumer.onMessage ${msgs.length} original msgs`, msgs)
     // TODO: data validation? E.g. whitelist
-    console.debug(`Consumer.onMessage ${msgs.length} original msgs`, msgs)
 
-    // Processes data via ML prediction
-    const rows = msgs.map((i) => this.predictBotOrTroll(i))
-    // console.debug(`Consumer.onMessage ${rows.length} predicted msgs`, rows)
-
-    this._broadcast(rows)
-  }
-
-  /**
-   * Mock ML bot/troll prediction function
-   * TODO: Use actual ML API
-   * @returns {{datetime: string, username: string, comment: string, score: number}}
-   */
-  predictBotOrTroll(data) {
-    // TODO: `data` validation
-    // TODO: Integrate ML web service @ https://botidentification-comments.herokuapp.com/
-    return {
-      datetime: moment.unix(data.created_utc).format('MMM Do HH:mm:ss z'),
-      username: data.author,
-      comment: data.body,
-      link_hash: data.link_id.slice(3),
-      score: 2 * Math.random() - 1 // Range: -1.0 - 1.0
-    }
+    this._broadcast(msgs)
   }
 }

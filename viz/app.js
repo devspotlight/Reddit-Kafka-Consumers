@@ -10,6 +10,8 @@ const webpackDev = require('webpack-dev-middleware')
 const webpackConfig = require('./webpack.config')
 const Consumer = require('./consumer')
 const constants = require('./consumer/constants')
+const unirest = require('unirest');
+const moment = require('moment') // See http://momentjs.com/docs/
 
 const app = express()
 const PRODUCTION = process.env.NODE_ENV === 'production'
@@ -48,8 +50,8 @@ const wss = new WebSocketServer({ server })
  */
 const consumer = new Consumer({
   broadcast: (msgs) => {
-    console.debug(`broadcast ${msgs.length} msgs`, msgs)
-    wss.clients.forEach((client) => client.send(JSON.stringify(msgs)))
+    // console.debug(`Broadcast ${msgs.length} msgs`, msgs)
+    predictBotOrTrolls(msgs)
   },
   interval: constants.INTERVAL,
   topic: constants.KAFKA_TOPIC,
@@ -61,6 +63,72 @@ const consumer = new Consumer({
     }
   }
 })
+
+/**
+ * Applies ML bot/troll prediction web service
+ * @ https://botidentification-comments.herokuapp.com
+ * @param msgs
+ */
+function predictBotOrTrolls(msgs) {
+  // console.debug('predictBotOrTrolls:', msgs.length, msgs)
+
+  // Will keep predictions in order after async POST to web service
+  let predictions = []
+  msgs.forEach((msg, m) => {
+    const data = {
+      link_hash: msg.link_id.slice(3),
+      ups: msg.ups,
+      score: msg.score,
+      controversiality: msg.controversiality ? 1 : 0,
+      author_verified: msg.author_verified ? 1 : 0,
+      no_follow: msg.no_follow ? 1 : 0,
+      over_18: msg.over_18 ? 1 : 0,
+      author_comment_karma: msg.author_comment_karma,
+      author_link_karma: msg.author_link_karma,
+      is_submitter: msg.is_submitter ? 1 : 0
+    }
+
+    // Integrate ML web service
+    unirest.post('https://botidentification-comments.herokuapp.com/')
+      .type('json')
+      .send(data)
+      .end((res) => {
+        console.debug('data sent', data)
+        // console.debug(m, 'res.headers', res.headers)
+        // TODO: Handle errors?
+        if (2 != res.statusType) // 2 = Ok 5 = Server Error
+          console.error(`Response not OK (${res.code})`, res.body)
+        predictions[m] = 2 == res.statusType ? res.body : { prediction: null }
+        predictions[m].username = msg.author
+        predictions[m].comment_prev = `${msg.body.slice(0, 100)}...`
+        predictions[m].datetime = moment.unix(msg.created_utc).format('MMM Do HH:mm:ss z')
+        predictions[m].link_hash = msg.link_id.slice(3)
+
+        // Determine behavior
+        switch (predictions[m].prediction) {
+          case 'Is a normal user':
+            predictions[m].behavior = 'user'
+            break
+          case 'Is a Bot':
+            predictions[m].behavior = 'user'
+            break
+          case 'Is a Troll':
+            predictions[m].behavior = 'troll'
+            break
+          default:
+            predictions[m].behavior = 'unknown'
+        }
+        console.debug('prediction', m, predictions[m])
+
+        // Push to wss once all messages have been predicted. Anon fn. below counts non-empty elements in `predictions`
+        if (msgs.length == predictions.reduce((ac, cv) => cv ? ac + 1 : ac, 0)) {
+          console.debug(m, `Pushing ${msgs.length} predictions to wss`)
+          wss.clients.forEach((client) => client.send(JSON.stringify(predictions)))
+        }
+      })
+    //unirest.post
+  })
+}
 
 /*
  * Attempts to start the Kafka consumer
