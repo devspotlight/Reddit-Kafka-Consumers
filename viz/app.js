@@ -111,10 +111,10 @@ function predictBotOrTrolls(msgs) {
         // Determine behavior
         switch (predictions[m].prediction) {
           case 'Is a normal user':
-            predictions[m].behavior = 'normaluser'
+            predictions[m].behavior = 'normal'
             break
           case 'Is a Bot':
-            predictions[m].behavior = 'usboter'
+            predictions[m].behavior = 'bot'
             break
           case 'Is a Troll':
             predictions[m].behavior = 'troll'
