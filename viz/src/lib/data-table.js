@@ -97,7 +97,11 @@ export default class DataTable {
         .text((cmt) => cmt.comment_prev)
       tr.append('td').text((cmt) => cmt.behavior)
     }
-
-    console.log('DataTable.update: New row data', this._maxSize, this._rowData.slice(0))
+    //
+    // console.log(
+    //   'DataTable.update: New row data',
+    //   this._maxSize,
+    //   this._rowData.slice(0)
+    // )
   }
 }
