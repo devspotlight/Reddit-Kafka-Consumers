@@ -51,6 +51,14 @@ export default class DataTable {
     if (this._pauseButton)
       this._pauseButton.text(this.paused ? 'Pause' : 'Resume')
     this.paused = !this.paused
+    // if (this.paused) {
+    //   let tr = this.tbody.insert('tr', ':first-child')
+    //   tr.append('td')
+    //     .attr('colspan', 2)
+    //   tr.append('td')
+    //     .attr('colspan', 2)
+    //     .text('...')
+    // }
   }
 
   /**
@@ -59,8 +67,8 @@ export default class DataTable {
    * @param data
    */
   update(data) {
-    console.log('DataTable.update: Received', data)
-
+    // console.log('DataTable.update: Received', data)
+    //
     // // Filter out comments with a score above the threshold
     // let threshold = Number(this._thld.node().value) / 100
     // if (Number.isNaN(threshold)) threshold = 0.2

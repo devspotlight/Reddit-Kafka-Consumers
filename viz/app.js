@@ -76,7 +76,6 @@ function predictBotOrTrolls(msgs) {
   let predictions = []
   msgs.forEach((msg, m) => {
     const data = {
-      link_hash: msg.link_id.slice(3),
       ups: msg.ups,
       score: msg.score,
       controversiality: msg.controversiality ? 1 : 0,
@@ -94,12 +93,15 @@ function predictBotOrTrolls(msgs) {
       .type('json')
       .send(data)
       .end((res) => {
-        // console.debug('data sent', data)
-        // console.debug(m, 'res.headers', res.headers)
+        // console.debug('data sent', JSON.stringify(data))
         // TODO: Handle errors?
-        if (2 != res.statusType)
+        if (2 != res.statusType) {
           // 2 = Ok 5 = Server Error
-          console.error(`Response not OK (${res.code})`, res.body)
+          console.error('Response not OK, HTTP code', res.code)
+          console.error('Data sent', JSON.stringify(data))
+          console.error('Response body', res.body)
+        }
+        // console.debug('res.body', res.body)
         predictions[m] = 2 == res.statusType ? res.body : { prediction: null }
         predictions[m].username = msg.author
         predictions[m].comment_prev = `${msg.body.slice(0, 100)}...`
@@ -124,7 +126,8 @@ function predictBotOrTrolls(msgs) {
         }
         // console.debug('prediction', m, predictions[m])
 
-        // Push to wss once all messages have been predicted. Anon fn. below counts non-empty elements in `predictions`
+        // Push to wss once all messages have been predicted.
+        // Anon fn. below counts non-empty elements in `predictions`
         if (
           msgs.length == predictions.reduce((ac, cv) => (cv ? ac + 1 : ac), 0)
         ) {
