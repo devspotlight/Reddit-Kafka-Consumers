@@ -18,16 +18,16 @@ export default class DataTable {
     botCtSlct,
     trlCtSlct
   ) {
-
-    // Target table adn threshbold <input>
+    // Target table {and threshold <input>}?
     this.tbody = d3.select(selector)
     this._thld = d3.select(thresholdInputSlct)
-    console.log(
-      'DataTable: Selected tbody and threshold',
-      this.tbody,
-      this._thld
-    )
-
+    // console.log(
+    //   // 'DataTable: Selected tbody and threshold',
+    //   'DataTable: Selected tbody',
+    //   this.tbody,
+    //   // this._thld
+    // )
+    //
     // Max number of rows in the table
     this._maxSize = maxSize
 
@@ -39,7 +39,7 @@ export default class DataTable {
     this._pauseButton = false
     if (pauseButtonSlct) {
       this._pauseButton = d3.select(pauseButtonSlct)
-      console.log('DataTable: Selected pause button', this._pauseButton)
+      // console.log('DataTable: Selected pause button', this._pauseButton)
     }
 
     // Behavior type comment counts
