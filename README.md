@@ -12,9 +12,8 @@ Here's an overview of how the system works.
 
 ## Structure
 
-This project includes 3 apps:
+This project includes 2 apps:
 
-1. A data producer called `generate_data`. Data is simulated in this example, but this could be replaced with almost anything that produces data: a marketing website, a SaaS product, a point-of-sale device, a kiosk, internet-connected thermostat or car. And more than one data producer can be added.
 1. A real-time data visualizer called `viz`, which shows relative volume of different categories of data being written into Kafka.
 1. And a Kafka-to-RedShift writer called `reshift_batch`, which simply reads data from Kafka and writes it to RedShift.
 
@@ -72,6 +71,6 @@ The following environment variables must be defined. If you used the Heroku depl
 - `KAFKA_TOPIC`: Kafka topic the system will produce to and consume from
 - `KAFKA_PREFIX`: (optional) This is only used by [Heroku's multi-tenant Apache Kafka plans](https://devcenter.heroku.com/articles/multi-tenant-kafka-on-heroku) (i.e. `basic` plans)
 
-Then in each of the `generate_data`, `viz`, and `redshift_batch` directories, run `npm start`.
+Then run `npm start` in both the `viz` and `redshift_batch` directories.
 
 Open the URL in the startup output of the `viz` app. It will likely be `http://localhost:3000`.
