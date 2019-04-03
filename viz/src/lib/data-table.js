@@ -87,6 +87,9 @@ export default class DataTable {
     //
     // Append most recent (filtered) messages to our table rows
     data.forEach((msg) => {
+      // // DEBUG: Temporary!
+      // if ('AutoModerator' == msg.username)
+      //   console.log('AutoModerator POST data sent to ML API:', msg.reqJSONstr)
       // if (msg.score < threshold) this._rowData.push(msg)
       this._rowData.push(msg)
 

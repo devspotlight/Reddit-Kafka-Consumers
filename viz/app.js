@@ -50,7 +50,7 @@ const wss = new WebSocketServer({ server })
  */
 const consumer = new Consumer({
   broadcast: (msgs) => {
-    // console.debug(`Broadcast ${msgs.length} msgs`, msgs)
+    // console.debug(`consumer: Broadcast ${msgs.length} msgs`, msgs)
     predictBotOrTrolls(msgs)
   },
   interval: constants.INTERVAL,
@@ -93,7 +93,7 @@ function predictBotOrTrolls(msgs) {
       .type('json')
       .send(data)
       .end((res) => {
-        // console.debug('data sent', JSON.stringify(data))
+        // console.debug('predictBotOrTrolls: Data sent', JSON.stringify(data))
         // TODO: Handle errors?
         if (2 != res.statusType) {
           // 2 = Ok 5 = Server Error
@@ -101,9 +101,17 @@ function predictBotOrTrolls(msgs) {
           console.error('Data sent', JSON.stringify(data))
           console.error('Response body', res.body)
         }
-        // console.debug('res.body', res.body)
+        // console.debug('predictBotOrTrolls: res.body', res.body)
         predictions[m] = 2 == res.statusType ? res.body : { prediction: null }
         predictions[m].username = msg.author
+        // // DEBUG: Temporary!
+        // if ('AutoModerator' == msg.author) {
+        //   console.log(
+        //     'AutoModerator POST data sent to ML API:',
+        //     JSON.stringify(data)
+        //   )
+        //   predictions[m].reqJSONstr = JSON.stringify(data)
+        // }
         predictions[m].comment_prev = `${msg.body.slice(0, 200)}...`
         predictions[m].datetime = moment
           .unix(msg.created_utc)
@@ -124,7 +132,7 @@ function predictBotOrTrolls(msgs) {
           default:
             predictions[m].behavior = 'unknown'
         }
-        // console.debug('prediction', m, predictions[m])
+        // console.debug('predictBotOrTrolls: prediction', m, predictions[m])
 
         // Push to wss once all messages have been predicted.
         // Anon fn. below counts non-empty elements in `predictions`
