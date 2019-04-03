@@ -7,7 +7,43 @@ const { performance } = require('perf_hooks');
 
 const db = Postgres(Config.database);
 db.connect();
-const ecommTable = new Postgres.helpers.ColumnSet(['time', 'session', 'action', 'product', 'category', 'campaign'], {table: 'ecommercelogs'});
+const ecommTable = new Postgres.helpers.ColumnSet([
+  'author_link_karma',
+  'author_comment_karma',
+  'author_created_at',
+  'author_verified',
+  'author_has_verified_email',
+  'subreddit_it',
+  'approved_at_utc',
+  'edited',
+  'mod_reason_by',
+  'banned_by',
+  'author_flair_type',
+  'removal_reason',
+  'link_id',
+  'author_flair_template_id',
+  'likes',
+  'banned_at_utc',
+  'mod_reason_title',
+  'gilded',
+  'archived',
+  'no_follow',
+  'author',
+  'num_comments',
+  'score',
+  'over_18',
+  'controversiality',
+  'body',
+  'link_title',
+  'downs',
+  'is_submitter',
+  'subreddit',
+  'num_reports',
+  'created_utc',
+  'quarantine',
+  'subreddit_type',
+  'ups'
+], {table: 'redditcomments'});
 
 const consumer = new Kafka.SimpleConsumer({
   ...Config.kafka.config,

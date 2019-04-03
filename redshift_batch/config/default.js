@@ -3,7 +3,7 @@ const config = {
   "timeout": 3000,
   "database": process.env.DATABASE_URL || "postgresql://localhost:5432",
   "kafka": {
-    "topic": "ecommerce-logs",
+    "topic": "reddit-comments",
     "group": "redshift-batch",
     "config": {
       "connectionString": process.env.KAFKA_URL || "kafka://localhost:9092",
