@@ -13,7 +13,7 @@ const ecommTable = new Postgres.helpers.ColumnSet([
   'author_created_at',
   'author_verified',
   'author_has_verified_email',
-  'subreddit_it',
+  'subreddit_id',
   'approved_at_utc',
   'edited',
   'mod_reason_by',
