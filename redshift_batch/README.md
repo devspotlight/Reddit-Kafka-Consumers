@@ -2,13 +2,13 @@
 
 Batches kafka messages into redshift.
 
-## Install
+## Local development
 
-`npm install`
+Run:
+`npm i`
 
-Copy config/default.json to config/local.json then edit the production.json
-
-```js
+Copy config/default.json to config/local.json and edit if needed. Example:
+```json
 {
   "queueSize": 50, // number of msgs to queue up before inserting
   "timeout": 3000, // max time to queue before inserting
@@ -20,20 +20,27 @@ Copy config/default.json to config/local.json then edit the production.json
       "kafkaHost": "kafka://localhost:9092",
       "ssl": {
         "key": "",
-        "cert: ""
+        "cert": ""
       }
     }
   }
 }
 ```
+
+## Deployment
+Copy config/default.json to production.json and edit if needed.
+
+## Database
+
+Required db schema to write to:
 ```sql
-CREATE TABLE redditcomments(
+CREATE TABLE reddit_comments(
     author_link_karma INT,
     author_comment_karma INT,
     author_created_at INT,
     author_verified BOOLEAN,
     author_has_verified_email BOOLEAN,
-    subreddit_it VARCHAR(255),
+    subreddit_id VARCHAR(255),
     approved_at_utc INT,
     edited INT,
     mod_reason_by VARCHAR(255),
@@ -62,7 +69,11 @@ CREATE TABLE redditcomments(
     created_utc INT,
     quarantine BOOLEAN,
     subreddit_type VARCHAR(255),
-    ups INT
+    ups INT,
+    is_bot BOOLEAN,
+    is_troll BOOLEAN,
+    recent_comments JSON,
+    is_training BOOLEAN
 );
 ```
 

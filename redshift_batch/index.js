@@ -42,8 +42,12 @@ const ecommTable = new Postgres.helpers.ColumnSet([
   'created_utc',
   'quarantine',
   'subreddit_type',
-  'ups'
-], {table: 'redditcomments'});
+  'ups',
+  'is_bot',
+  'is_troll',
+  'recent_comments',
+  'is_training'
+], {table: 'reddit_comments'});
 
 const consumer = new Kafka.SimpleConsumer({
   ...Config.kafka.config,
@@ -61,23 +65,23 @@ const dataHandler = (messageSet, topic, partition) => {
     const value = JSON.parse(msg.message.value);
     const offset = msg.offset;
     const length = queue.push(value);
-    //console.log(length);
+
     if (lock === false && (length >= Config.queueSize || sinceLast > Config.timeout)) {
-      console.log(queue.length);
+      console.debug('queue.length', queue.length);
       lock = true;
       lastUpdate = now;
       const query = Postgres.helpers.insert(queue, ecommTable);
       db.query(query, queue)
-        .then((data) => {
+        .then(() => {
           return consumer.commitOffset({ topic, partition, offset });
         })
         .then(() => {
           lock = false;
-          console.log('unlock');
+          console.debug('unlock');
         })
         .catch((err) => {
           lock = false;
-          console.log(err);
+          console.debug('err', err);
         });
       queue = [];
     }
