@@ -59,15 +59,20 @@ let lastUpdate = performance.now();
 let lock = false;
 
 const dataHandler = (messageSet, topic, partition) => {
+  console.debug('redshift_batch: handling', messageSet.length, 'messages from', topic, partition)
   messageSet.forEach((msg) => {
     const now = performance.now();
     const sinceLast = now - lastUpdate;
     const value = JSON.parse(msg.message.value);
+    console.debug('redshift_batch:   queueing comment', value.link_id, value.created_utc)
     const offset = msg.offset;
+    // console.debug('redshift_batch:   processing msg at', offset)
     const length = queue.push(value);
+    // console.debug('redshift_batch: queue length', length)
 
+    // Executes a `query` with the cumulative `queue` of row values every time the db is not locked.
     if (lock === false && (length >= Config.queueSize || sinceLast > Config.timeout)) {
-      console.debug('queue.length', queue.length);
+      console.debug('redshift_batch:   inserting', queue.length, 'message rows to Redshift');
       lock = true;
       lastUpdate = now;
       const query = Postgres.helpers.insert(queue, commentsTable);
@@ -77,14 +82,15 @@ const dataHandler = (messageSet, topic, partition) => {
         })
         .then(() => {
           lock = false;
-          console.debug('unlock');
+          // console.debug('redshift_batch:   unlock');
         })
         .catch((err) => {
           lock = false;
-          console.debug('err', err);
+          // console.debug('redshift_batch:   err', err);
         });
       queue = [];
     }
+    // TODO: What if the db is locked during the last n messages when the loop ends? Will those rows get inserted?
   });
 };
 

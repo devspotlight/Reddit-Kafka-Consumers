@@ -69,7 +69,7 @@ const consumer = new Consumer({
  * @param msgs messages to predict user class for
  */
 function predictBotOrTrolls(msgs) {
-  console.debug('predictBotOrTrolls:', msgs.length, msgs)
+  // console.debug('predictBotOrTrolls:', msgs.length, msgs)
 
   /**
    * Keeps predictions in order after async POST to web service
