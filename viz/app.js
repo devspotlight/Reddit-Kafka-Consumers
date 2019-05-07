@@ -95,7 +95,7 @@ function predictBotOrTrolls(msgs) {
         author_comment_karma: msg.author_comment_karma,
         author_link_karma: msg.author_link_karma,
         is_submitter: msg.is_submitter ? 1 : 0
-        // TODO: recent_comments?
+        // TODO: recent_comments: JSON.parse(msg.recent_comments) ? Vs map each into similar structure as above
       }
 
       // Integrates ML web service.

@@ -7,7 +7,7 @@ const { performance } = require('perf_hooks');
 
 const db = Postgres(Config.database);
 db.connect();
-const ecommTable = new Postgres.helpers.ColumnSet([
+const commentsTable = new Postgres.helpers.ColumnSet([
   'author_link_karma',
   'author_comment_karma',
   'author_created_at',
@@ -70,7 +70,7 @@ const dataHandler = (messageSet, topic, partition) => {
       console.debug('queue.length', queue.length);
       lock = true;
       lastUpdate = now;
-      const query = Postgres.helpers.insert(queue, ecommTable);
+      const query = Postgres.helpers.insert(queue, commentsTable);
       db.query(query, queue)
         .then(() => {
           return consumer.commitOffset({ topic, partition, offset });

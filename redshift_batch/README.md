@@ -72,7 +72,7 @@ CREATE TABLE reddit_comments(
     ups INT,
     is_bot BOOLEAN,
     is_troll BOOLEAN,
-    recent_comments JSON,
+    recent_comments TEXT,
     is_training BOOLEAN
 );
 ```
