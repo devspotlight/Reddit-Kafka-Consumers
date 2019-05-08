@@ -81,7 +81,7 @@ const dataHandler = (messageSet, topic, partition) => {
       // See http://vitaly-t.github.io/pg-promise/helpers.html#.insert
       const query = Postgres.helpers.insert(queue, commentsColumns)
       // console.debug('redshift_batch:   insert query:', query)
-      db.query(query, queue)
+      db.query(query)
         .then(() => {
           return consumer.commitOffset({ topic, partition, offset })
           // NOTE: A committed offset indicates that all messages up to this offset have been processed.
