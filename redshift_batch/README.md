@@ -34,49 +34,35 @@ Copy config/default.json to production.json and edit if needed.
 ## Database
 
 Required db schema to write to:
-```sql
+```redshift
 CREATE TABLE reddit_comments(
-    author_link_karma INT,
-    author_comment_karma INT,
-    author_created_at INT,
-    author_verified BOOLEAN,
-    author_has_verified_email BOOLEAN,
-    subreddit_id VARCHAR(255),
-    approved_at_utc INT,
-    edited INT,
-    mod_reason_by VARCHAR(255),
+    id BIGINT IDENTITY(1, 1),
     banned_by VARCHAR(255),
-    author_flair_type VARCHAR(255),
-    removal_reason VARCHAR(MAX),
-    link_id VARCHAR(255),
-    author_flair_template_id VARCHAR(255),
-    likes INT,
-    banned_at_utc INT,
-    mod_reason_title VARCHAR(MAX),
-    gilded INT,
-    archived BOOLEAN,
     no_follow BOOLEAN,
+    link_id VARCHAR(10),
+    gilded BOOLEAN,
     author VARCHAR(255),
+    author_verified BOOLEAN,
+    author_comment_karma INT,
+    author_link_karma INT,
     num_comments INT,
+    created_utc INT,
     score INT,
     over_18 BOOLEAN,
-    controversiality INT,
-    body VARCHAR(MAX),
-    link_title VARCHAR(MAX),
+    body VARCHAR(65535),
     downs INT,
     is_submitter BOOLEAN,
-    subreddit VARCHAR(255),
     num_reports INT,
-    created_utc INT,
+    controversiality INT,
     quarantine BOOLEAN,
-    subreddit_type VARCHAR(255),
     ups INT,
     is_bot BOOLEAN,
     is_troll BOOLEAN,
-    recent_comments VARCHAR(MAX),
+    recent_comments VARCHAR(65535),
     is_training BOOLEAN
 );
 ```
+> NOTE: This is [Redshift flavored SQL](https://docs.aws.amazon.com/redshift/latest/dg/c_SQL_reference.html).
 
 ## Running
 
