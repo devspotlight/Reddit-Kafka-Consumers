@@ -84,18 +84,37 @@ function predictBotOrTrolls(msgs) {
      * @param m `msg` index
      */
     (msg, m) => {
+      if (msg.is_training) {
+        console.debug(
+          'predictBotOrTrolls skipping training msg',
+          msg.link_id,
+          msg.is_bot ? '(bot)' : '',
+          msg.is_troll ? '(troll)' : ''
+        )
+        return
+      }
       // Whitelists `msg` property values into expected format.
       const data = {
-        ups: msg.ups,
-        score: msg.score,
-        controversiality: msg.controversiality ? 1 : 0,
-        author_verified: msg.author_verified ? 1 : 0,
+        banned_by: msg.banned_by,
         no_follow: msg.no_follow ? 1 : 0,
-        over_18: msg.over_18 ? 1 : 0,
+        link_id: msg.link_id,
+        gilded: msg.gilded ? 1 : 0,
+        author: msg.author,
+        author_verified: msg.author_verified ? 1 : 0,
         author_comment_karma: msg.author_comment_karma,
         author_link_karma: msg.author_link_karma,
-        is_submitter: msg.is_submitter ? 1 : 0
-        // TODO: recent_comments: JSON.parse(msg.recent_comments) ? Vs map each into similar structure as above
+        num_comments: msg.num_comments,
+        created_utc: msg.created_utc,
+        score: msg.score,
+        over_18: msg.over_18 ? 1 : 0,
+        body: msg.body,
+        downs: msg.downs,
+        is_submitter: msg.is_submitter ? 1 : 0,
+        num_reports: msg.num_reports,
+        controversiality: msg.controversiality ? 1 : 0,
+        quarantine: msg.quarantine ? 1 : 0,
+        ups: msg.ups,
+        recent_comments: JSON.parse(msg.recent_comments)
       }
 
       // Integrates ML web service.
@@ -106,16 +125,25 @@ function predictBotOrTrolls(msgs) {
         .end((res) => {
           // console.debug('predictBotOrTrolls: Data sent to https://botidentification-comments.herokuapp.com/', JSON.stringify(data))
 
-          // TODO: Handle errors?
           if (2 != res.statusType) {
             // 2 = Ok 5 = Server Error
             console.error(
-              'POST call to https://botidentification-comments.herokuapp.com/'
+              `BAD response (HTTP ${
+                res.code
+              }) after POST call to https://botidentification-comments.herokuapp.com/`
             )
-            console.error('with data', JSON.stringify(data))
-            console.error('Response NOT OK! HTTP code', res.code)
+            console.error('with msg (partial data)', {
+              link_id: msg.link_id,
+              author: msg.author,
+              author_verified: msg.author_verified ? 1 : 0,
+              created_utc: msg.created_utc,
+              body20: `${msg.body.slice(0, 27)}...`,
+              controversiality: msg.controversiality ? 1 : 0,
+              recent_comments_len: JSON.parse(msg.recent_comments).length
+            })
             // console.error('Response body', res.body)
           }
+          // TODO: Handle errors?
 
           // console.debug('predictBotOrTrolls: res.body', res.body)
           predictions[m] = 2 == res.statusType ? res.body : { prediction: null }
