@@ -49,10 +49,10 @@ const dataHandler = (messageSet, topic, partition) => {
     const now = performance.now()
     const sinceLast = now - lastUpdate
     const value = JSON.parse(msg.message.value)
-    console.debug('redshift_batch:   queueing comment', value.link_id, value.created_utc)
     const offset = msg.offset
-    // console.debug('redshift_batch:   processing msg at', offset)
     const length = queue.push(value)
+    console.debug('redshift_batch:   queueing comment', value.link_id, value.created_utc)
+    // console.debug('redshift_batch:   processing msg at', offset)
     // console.debug('redshift_batch: queue length', length)
 
     // TODO: console.info only if NODE_ENV !== 'production'
@@ -62,22 +62,28 @@ const dataHandler = (messageSet, topic, partition) => {
       // console.debug('redshift_batch:   messages to insert:\n', queue)
       lock = true
       lastUpdate = now
-      // See http://vitaly-t.github.io/pg-promise/helpers.html#.insert
-      const query = Postgres.helpers.insert(queue, commentsColumns)
-      // console.debug('redshift_batch:   insert query:', query)
-      db.query(query)
-        .then(() => {
-          return consumer.commitOffset({ topic, partition, offset })
-          // NOTE: A committed offset indicates that all messages up to this offset have been processed.
-        })
-        .then(() => {
-          lock = false
-          // console.debug('redshift_batch:   unlock')
-        })
-        .catch((err) => {
-          lock = false
-          console.error('redshift_batch:   db query error!', err)
-        })
+      try {
+        // See http://vitaly-t.github.io/pg-promise/helpers.html#.insert
+        const query = Postgres.helpers.insert(queue, commentsColumns)
+        // console.debug('redshift_batch:   insert query:', query)
+        db.query(query)
+          .then(() => {
+            return consumer.commitOffset({topic, partition, offset})
+            // NOTE: A committed offset indicates that all messages up to this offset have been processed.
+          })
+          .then(() => {
+            lock = false
+            // console.debug('redshift_batch:   unlock')
+          })
+          .catch((err) => {
+            lock = false
+            console.error('redshift_batch:   db query error!', err)
+          })
+      } catch(err) {
+        console.error('redshift_batch: dataHandler error!', err)
+        console.error('redshift_batch: batch query skipped!', queue.length)
+        lock = false
+      }
       queue = []
     }
     // TODO: What if the db is locked during the last n messages when the loop ends? Will those rows get inserted?
