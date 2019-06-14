@@ -29,7 +29,6 @@ Copy config/default.json to config/local.json and edit if needed. Example:
 
 ## Deployment
 Copy config/default.json to production.json and edit if needed.
-> TODO: The above doesn't seem to be necessary nor is it known whether it would have any effect.
 
 ## Database
 

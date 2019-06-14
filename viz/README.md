@@ -20,7 +20,7 @@ Additionally these environment variables need to be defined:
 - `KAFKA_TOPIC`: The Kafka topics to subscribe to.
 - `KAFKA_PREFIX`: (optional) This is only used by [Heroku's multi-tenant Apache Kafka plans](https://devcenter.heroku.com/articles/multi-tenant-kafka-on-heroku) (i.e. `basic` plans)
 
-> By default the above vars are obtained using the `heroku` command, which needs to be configured with a default app containing the Kafka cluster.
+> By default the above vars are obtained using the `heroku` CLI tool, which needs to be configured with a default app containing the Kafka cluster. Test with `heroku config:get KAFKA_URL`.
 
 ### Development Server
 

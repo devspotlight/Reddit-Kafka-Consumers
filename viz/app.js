@@ -114,23 +114,42 @@ function predictBotOrTrolls(msgs) {
         controversiality: msg.controversiality ? 1 : 0,
         quarantine: msg.quarantine ? 1 : 0,
         ups: msg.ups,
-        recent_comments: JSON.parse(msg.recent_comments)
+        recent_comments: msg.recent_comments
       }
 
       // Integrates ML web service.
+      // console.debug(
+      //   'predictBotOrTrolls: POSTing to botidentification.herokuapp.com:',
+      //   data
+      // )
+      // console.debug(
+      //   'predictBotOrTrolls: POSTing to botidentification.herokuapp.com (partial data):',
+      //   {
+      //     link_id: msg.link_id,
+      //     author: msg.author,
+      //     author_verified: msg.author_verified ? 1 : 0,
+      //     created_utc: msg.created_utc,
+      //     body20: `${msg.body.slice(0, 27)}...`,
+      //     controversiality: msg.controversiality ? 1 : 0,
+      //     recent_comments_len: JSON.parse(msg.recent_comments).length
+      //   }
+      // )
       unirest
-        .post('https://botidentification-comments.herokuapp.com/')
+        .post('https://botidentification.herokuapp.com/')
         .type('json')
         .send(data)
         .end((res) => {
-          // console.debug('predictBotOrTrolls: Data sent to https://botidentification-comments.herokuapp.com/', JSON.stringify(data))
+          // console.debug(
+          //   'predictBotOrTrolls: Data sent to https://botidentification.herokuapp.com/',
+          //   JSON.stringify(data)
+          // )
 
           if (2 != res.statusType) {
             // 2 = Ok 5 = Server Error
             console.error(
               `BAD response (HTTP ${
                 res.code
-              }) after POST call to https://botidentification-comments.herokuapp.com/`
+              }) after POST call to https://botidentification.herokuapp.com/`
             )
             console.error('with msg (partial data)', {
               link_id: msg.link_id,
@@ -144,8 +163,13 @@ function predictBotOrTrolls(msgs) {
             // console.error('Response body', res.body)
           }
           // TODO: Handle errors?
+          console.debug(
+            'predictBotOrTrolls: res.body for ',
+            msg.link_id,
+            msg.created_utc,
+            res.body
+          )
 
-          // console.debug('predictBotOrTrolls: res.body', res.body)
           predictions[m] = 2 == res.statusType ? res.body : { prediction: null }
           predictions[m].username = msg.author
           // // DEBUG: Temporary!
