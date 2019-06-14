@@ -65,11 +65,11 @@ const consumer = new Consumer({
 
 /**
  * Applies ML web service for user class prediction (normal/bot/troll)
- * @todo API URL hardcoded https://botidentification-comments.herokuapp.com
+ * @todo API URL hardcoded https://botidentification.herokuapp.com
  * @param msgs messages to predict user class for
  */
 function predictBotOrTrolls(msgs) {
-  // console.debug('predictBotOrTrolls:', msgs.length, msgs)
+  // console.debug('consumer:', msgs.length, msgs)
 
   /**
    * Keeps predictions in order after async POST to web service
@@ -85,8 +85,8 @@ function predictBotOrTrolls(msgs) {
      */
     (msg, m) => {
       if (msg.is_training) {
-        console.debug(
-          'predictBotOrTrolls skipping training msg',
+        console.info(
+          'msg handler: skipping training msg',
           msg.link_id,
           msg.is_bot ? '(bot)' : '',
           msg.is_troll ? '(troll)' : ''
@@ -118,12 +118,12 @@ function predictBotOrTrolls(msgs) {
       }
 
       // Integrates ML web service.
+      // // console.debug(
+      // //   'msg handler: POSTing to botidentification.herokuapp.com:',
+      // //   data
+      // // )
       // console.debug(
-      //   'predictBotOrTrolls: POSTing to botidentification.herokuapp.com:',
-      //   data
-      // )
-      // console.debug(
-      //   'predictBotOrTrolls: POSTing to botidentification.herokuapp.com (partial data):',
+      //   'msg handler: POSTing to botidentification.herokuapp.com (partial data):',
       //   {
       //     link_id: msg.link_id,
       //     author: msg.author,
@@ -139,15 +139,18 @@ function predictBotOrTrolls(msgs) {
         .type('json')
         .send(data)
         .end((res) => {
-          // console.debug(
-          //   'predictBotOrTrolls: Data sent to https://botidentification.herokuapp.com/',
-          //   JSON.stringify(data)
-          // )
-
-          if (2 != res.statusType) {
-            // 2 = Ok 5 = Server Error
+          if (2 == res.statusType) {
+            console.info(
+              'msg handler: res.body for',
+              msg.author,
+              msg.link_id,
+              msg.created_utc,
+              res.body
+            )
+          } else {
+            // res.statusType: 2 = Ok, 5 = Server Error
             console.error(
-              `BAD response (HTTP ${
+              `msg handler: BAD response (HTTP ${
                 res.code
               }) after POST call to https://botidentification.herokuapp.com/`
             )
@@ -160,55 +163,42 @@ function predictBotOrTrolls(msgs) {
               controversiality: msg.controversiality ? 1 : 0,
               recent_comments_len: JSON.parse(msg.recent_comments).length
             })
-            // console.error('Response body', res.body)
+            // console.debug('and body', res.body)
           }
-          // TODO: Handle errors?
-          console.debug(
-            'predictBotOrTrolls: res.body for',
-            msg.author,
-            msg.link_id,
-            msg.created_utc,
-            res.body
-          )
 
           predictions[m] = 2 == res.statusType ? res.body : { prediction: null }
           predictions[m].username = msg.author
-          // // DEBUG: Temporary!
-          // if ('AutoModerator' == msg.author) {
-          //   console.log(
-          //     'AutoModerator POST data sent to ML API:',
-          //     JSON.stringify(data)
-          //   )
-          //   predictions[m].reqJSONstr = JSON.stringify(data)
-          // }
           predictions[m].comment_prev = `${msg.body.slice(0, 200)}...`
           predictions[m].datetime = moment
             .unix(msg.created_utc)
             .format('MMM Do HH:mm:ss z')
           predictions[m].link_hash = msg.link_id.slice(3)
 
-          // Determine behavior
+          // Determine behavior and whitelist ML API replies (hardcoded)
           switch (predictions[m].prediction) {
-            case 'Is a normal user':
-              predictions[m].behavior = 'normal'
+            case 'normal user':
+              predictions[m].behavior = 'normal user'
               break
-            case 'Is a Bot':
-              predictions[m].behavior = 'bot'
+            case 'possible bot':
+              predictions[m].behavior = 'possible bot'
               break
-            case 'Is a Troll':
-              predictions[m].behavior = 'troll'
+            case 'possible troll':
+              predictions[m].behavior = 'possible troll'
+              break
+            case 'Classification error':
+              predictions[m].behavior = 'not known' // Code for "Error! Look into ML API code/model."
               break
             default:
               predictions[m].behavior = 'unknown'
           }
-          // console.debug('predictBotOrTrolls: prediction', m, predictions[m])
+          // console.debug('msg handler: prediction', m, predictions[m])
 
-          // Push to wss once all messages have been predicted.
-          // Anon fn. below counts non-empty elements in `predictions`
+          // Push to WSS once all messages have been predicted.
           if (
+            // Anon fn. below counts non-empty elements in `predictions`
             msgs.length == predictions.reduce((ac, cv) => (cv ? ac + 1 : ac), 0)
           ) {
-            // console.debug(m, `Pushing ${msgs.length} predictions to wss`)
+            // console.debug(`msg handler: Pushing ${msgs.length} predictions to WSS at msg ${m}`)
             wss.clients.forEach((client) =>
               client.send(JSON.stringify(predictions))
             )
@@ -226,11 +216,11 @@ function predictBotOrTrolls(msgs) {
 consumer
   .init()
   .catch((err) => {
-    console.error(`Kafka consumer could not be initialized: ${err}`)
+    console.error(`consumer: Kafka connection could not be initialized: ${err}`)
     if (PRODUCTION) throw err
   })
   .then(() => {
     server.listen(PORT, () =>
-      console.info(`http/ws server listening on http://localhost:${PORT}`)
+      console.info(`consumer: HTTP/WSS listening on http://localhost:${PORT}`)
     )
   })

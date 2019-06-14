@@ -95,13 +95,13 @@ export default class DataTable {
 
       // Update behavior counts
       switch (msg.behavior) {
-        case 'normal':
+        case 'normal user':
           this._nrmCt++
           break
-        case 'bot':
+        case 'possible bot':
           this._botCt++
           break
-        case 'troll':
+        case 'possible troll':
           this._trlCt++
           break
       }
