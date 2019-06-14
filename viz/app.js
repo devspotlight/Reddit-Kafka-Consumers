@@ -164,7 +164,8 @@ function predictBotOrTrolls(msgs) {
           }
           // TODO: Handle errors?
           console.debug(
-            'predictBotOrTrolls: res.body for ',
+            'predictBotOrTrolls: res.body for',
+            msg.author,
             msg.link_id,
             msg.created_utc,
             res.body

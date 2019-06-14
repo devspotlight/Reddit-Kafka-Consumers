@@ -118,9 +118,10 @@ export default class DataTable {
 
       let tr = rows.enter().insert('tr', ':first-child')
       tr.append('td').text((cmt) => cmt.datetime)
+      tr.append('td').text((cmt) => cmt.behavior)
       tr.append('td')
         .append('a')
-        .attr('href', (cmt) => `https://www.reddit.com/${cmt.username}`)
+        .attr('href', (cmt) => `https://www.reddit.com/user/${cmt.username}`)
         .attr('target', '_blank')
         .text((cmt) => cmt.username)
       tr.append('td')
@@ -131,7 +132,6 @@ export default class DataTable {
         )
         .attr('target', '_blank')
         .text((cmt) => cmt.comment_prev)
-      tr.append('td').text((cmt) => cmt.behavior)
     }
 
     // Behavior type comment counts

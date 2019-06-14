@@ -2,7 +2,7 @@
 
 > Based on https://github.com/heroku/kafka-demo
 
-A simple app that streams comments from reddit/r/politics and analyzes the usrs behavior in real-time by using our machine learning API. They are read from a Kafka topic named `reddit-comments`.
+A simple app that streams comments from reddit/r/politics and analyzes the uses behavior in real-time by using our machine learning API. They are read from a Kafka topic named `reddit-comments`.
 
 ### Development Setup
 
