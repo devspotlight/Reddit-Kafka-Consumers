@@ -25,7 +25,7 @@ You can optionally deploy Metabase to Heroku to query RedShift. Check out [Metab
 
 ### Prerequisites
 
-- An AWS RedShift cluster. Check out [this Terraform script](https://github.com/heroku-examples/terraform-heroku-peered-redshift) for an easy way to create a RedShift cluster along with a Heroku Private Space and a private peering connection between the Heroku Private Space and the RedShift's AWS VPC. *Not free! This will incur cost on AWS and Heroku.*
+- An AWS RedShift cluster. Check out [this Terraform script](https://github.com/heroku-examples/terrgaform-heroku-peered-redshift) for an easy way to create a RedShift cluster along with a Heroku Private Space and a private peering connection between the Heroku Private Space and the RedShift's AWS VPC. *Not free! This will incur cost on AWS and Heroku.*
 - Node.js
 
 ### Deploy to Heroku
@@ -35,7 +35,7 @@ git clone git@github.com:heroku-examples/kafka-stream-viz.git
 cd kafka-stream-viz
 heroku create
 heroku addons:create heroku-kafka:basic-0
-heroku kafka:topics:create ecommerce-logs
+heroku kafka:topics:create reddit-comments
 heroku kafka:consumer-groups:create redshift-batch
 git push heroku master
 ```
@@ -47,7 +47,7 @@ Alternatively, you can use the Heroku Deploy button:
 And then create the necessary Kafka topic and consumer group:
 
 ```shell
-heroku kafka:topics:create ecommerce-logs #this can also be created at https://data.heroku.com/
+heroku kafka:topics:create reddit-comments # It can also be created at https://data.heroku.com/
 heroku kafka:consumer-groups:create redshift-batch
 ```
 
