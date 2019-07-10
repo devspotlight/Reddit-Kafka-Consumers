@@ -44,7 +44,7 @@ const wss = new WebSocketServer({ server })
 
 /**
  * Kafka consumer
- * Will broadcast JSON (assumed) messages to all wss clients
+ * Will broadcast JSON (assumed) messages to `predictBotOrTrolls`
  * @type {module.Consumer}
  */
 const consumer = new Consumer({
@@ -65,6 +65,7 @@ const consumer = new Consumer({
 
 /**
  * Applies ML web service for user class prediction (normal/bot/troll)
+ * and sends results to all wss clients
  * @todo API URL hardcoded https://botidentification.herokuapp.com
  * @param msgs messages to predict user class for
  */
