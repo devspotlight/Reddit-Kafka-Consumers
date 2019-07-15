@@ -10,7 +10,7 @@
     "data analytics",
     "data visualization"
   ],
-  "repository": "https://github.com/heroku-examples/analytics-with-kafka-redshift-metabase",
+  "repository": "https://github.com/devspotlight/Reddit-Kafka-Consumers",
   "success_url": "/",
   "env": {
     "AWS_ACCESS_KEY_ID": {
